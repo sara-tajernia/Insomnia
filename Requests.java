@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +17,8 @@ public class Requests {
 
     private JPanel requests;
     private JPanel req;
-    private int size = 1;
+    private JPanel req2;
+    private int size;
     private NewRequest NR;
     private JPanel nr;
     private String nameRequest;
@@ -29,10 +31,15 @@ public class Requests {
      * @return (JPanel) newRequest
      */
 
-    public JPanel newRequest(){
-        NR = new NewRequest(nameRequest);
-        nr = NR.newRquest();
+    public JPanel newRequest(String themColor, boolean followRedirect){
+//        System.out.println(followRedirect);
+        NR = new NewRequest(nameRequest, followRedirect);
+        nr = NR.newRquest(themColor);
         return nr;
+    }
+
+    public void ColorRequests(String them){
+
     }
 
     /**
@@ -43,36 +50,45 @@ public class Requests {
      * @return JPanel request that we can add it to the JFrame
      */
 
-    public JPanel request() {
-        requests = new JPanel(new BorderLayout(0, 0));
+    public JPanel request(String them) {
+        requests = new JPanel(new BorderLayout());
         JLabel lable = new JLabel("Graphical User Interface");
-        lable.setForeground(Color.white);
-        lable.setBackground(new Color(70, 30, 200));
+
         lable.setFont(new Font("Serif", Font.BOLD, 30));
         lable.setHorizontalAlignment(SwingConstants.CENTER);
         lable.setOpaque(true);
-        int hight = lable.getPreferredSize().height + 20;
-        lable.setPreferredSize(new Dimension(lable.getPreferredSize().width, hight));
+//        int hight = lable.getPreferredSize().height + 20;
+        lable.setPreferredSize(new Dimension(lable.getPreferredSize().width, lable.getPreferredSize().height + 20));
 
-        req = new JPanel();
-        req.setLayout(null);
-        req.setBackground(new Color(100, 130, 180));
+        req = new JPanel(new BorderLayout());
+        req.setBorder(new EmptyBorder(0,0,0,0));
+        req2 = new JPanel();
         JButton create = new JButton("Create a new request");
-        create.setBounds(0, 0, 433, 50);
-        create.setBackground(new Color(70, 30, 200));
+        create.setPreferredSize(new Dimension(create.getPreferredSize().width, create.getPreferredSize().height + 15));
+//        create.setHorizontalAlignment(SwingConstants.LEFT);
         create.setOpaque(true);
-        create.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-                nameRequest = JOptionPane.showInputDialog("The name of your new request");
-                builtRequest(nameRequest);
-            }
-        });
 
-        req.add(create, BorderLayout.NORTH);
-        requests.add(lable, BorderLayout.NORTH);
-        requests.add(req, BorderLayout.CENTER);
+        if (them == "blue") {
+            lable.setBackground(new Color(70, 30, 200));
+            req2.setBackground(new Color(100, 130, 180));
+            create.setBackground(new Color(70, 30, 200));
+            lable.setForeground(Color.white);
+        }
+        else if (them == "light"){
+            lable.setBackground(new Color(169, 169, 169));
+            req2.setBackground(new Color(220, 220, 220));
+            create.setBackground(new Color(169, 169, 169));
+            lable.setForeground(Color.darkGray);
+        }
+        else {
+            lable.setBackground(Color.black);
+            req2.setBackground(new Color(98, 98, 98));
+            create.setBackground(new Color(55, 55, 55));
+            lable.setForeground(Color.white);
+        }
+
+
 
         File folder = new File("/Users/sara/IdeaProjects/GUI!");
         File[] listOfFiles = folder.listFiles();
@@ -81,9 +97,28 @@ public class Requests {
             if (file.isFile() && file.getName().contains("request_")) {
                 String split[] = file.getName().split("_|\\.");
                 String name = split[1];
-                builtRequest(name);
+                JButton built = new JButton(name);
+                if(!(name == null || (name != null && ("".equals(name)))))
+                    builtRequest(built, them);
             }
         }
+
+        create.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                nameRequest = JOptionPane.showInputDialog("Enter the name of your new request");
+                JButton built = new JButton(nameRequest);
+                if(!(nameRequest == null || (nameRequest != null && ("".equals(nameRequest)))))
+                    builtRequest(built, them);
+//                builtRequest(nameRequest);
+                req2.updateUI();
+            }
+        });
+        req.add(create, BorderLayout.NORTH);
+        req.add(new JScrollPane(req2));
+        requests.add(lable, BorderLayout.NORTH);
+        requests.add(req, BorderLayout.CENTER);
         return requests;
     }
 
@@ -92,21 +127,64 @@ public class Requests {
      * we use this method to add a new request to JPanel
      * by action performed we can have access to each request
      * button information
-     * @param name that we got from input to save the request by it name
+     * @param built that we got from input to save the request by it name
      */
-    private void builtRequest(String name) {
+    private void builtRequest(JButton built, String them) {
 
+//        if(name == null || (name != null && ("".equals(name))))
+//            return;
 
-        JButton built = new JButton(name);
-        built.setBackground(new Color(80, 130, 180));
-        built.setPreferredSize(new Dimension(built.getPreferredSize().width + 30, built.getPreferredSize().height + 10));
+        JPanel x = new JPanel();
+        x.setLayout(new GridBagLayout());
+        GridBagConstraints gbl = new GridBagConstraints();
+        gbl.fill = GridBagConstraints.HORIZONTAL;
+        if (them == "blue")
+            built.setBackground(new Color(80, 130, 180));
+        else if (them == "light")
+            built.setBackground(new Color(245, 245, 245));
+        else
+            built.setBackground(new Color(80, 80, 80));
+
         built.setOpaque(true);
         built.setFont(new Font("Arial", Font.PLAIN, 20));
-        built.setBounds(0, 50*(size ++), 433, 50);
-        req.add(built);
+//        built.setHorizontalAlignment(SwingConstants.LEFT);
+
+
+//        System.out.println(size);
+        if (size > 13)
+            req2.setLayout(new GridLayout(size+1,  1));
+        else
+            req2.setLayout(new GridLayout(14, 1));
+//        System.out.println(size);
+
+        gbl.weightx = 15;
+        gbl.ipady = 15;
+        x.add(built, gbl);
+        req2.add(x);
+
+        size++;
+
+
+
         built.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                for (Component c : NR.getHeader2().getComponents()){
+                    if (c instanceof JPanel){
+                        JFrame x = new JFrame();
+//                        System.out.println("num");
+                        x.add(c);
+                    }
+                }
+
+                for (Component cmp : NR.getFormData2().getComponents()){
+                    if (cmp instanceof JPanel){
+                        JFrame x = new JFrame();
+                        x.add(cmp);
+                    }
+                }
+
                 String NameRequest = built.getText();
                 NR.setNameRequest(NameRequest);
 
@@ -116,6 +194,7 @@ public class Requests {
                 int Count = 0;
                 for (File file : listOfFiles) {
                     if (file.isFile() && file.getName().contains("request_" +NR.getNameRequest())) {
+//                        System.out.println(NR.getNameRequest());
                         Count++;
                         try {
                             ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
@@ -164,30 +243,39 @@ public class Requests {
                 }
                 if (Count == 0){
 
-                    for (Component c : NR.getHeader().getComponents()){
-                        if (c instanceof JPanel){
-                            JFrame x = new JFrame();
-                            x.add(c);
-                        }
-                    }
+//                    for (Component c : NR.getHeader2().getComponents()){
+//                        if (c instanceof JPanel){
+//                            JFrame x = new JFrame();
+//                            System.out.println("num");
+//                            x.add(c);
+//                        }
+//                    }
+//
+//                    for (Component cmp : NR.getFormData2().getComponents()){
+//                        if (cmp instanceof JPanel){
+//                            JFrame x = new JFrame();
+//                            x.add(cmp);
+//                        }
+//                    }
 
-                    for (Component cmp : NR.getFormData().getComponents()){
-                        if (cmp instanceof JPanel){
-                            JFrame x = new JFrame();
-                            x.add(cmp);
-                        }
-                    }
-
-                    JTextField test1 = NR.getURL();
-                    test1.setText("URL");
+//                    JTextField test1 = NR.getURL();
+//                    test1.setText("URL");
 
                     JComboBox test2 = NR.getMETHOD();
                     test2.setSelectedIndex(0);
                     NR.addNew("Header", "Value", "header");
                     NR.addNew("Name", "Value", "Form Data");
+//                    NR.getFormData2().updateUI();
+//                    NR.getHeader2().updateUI();
+//
+//                    NR.getFormData().updateUI();
+//                    NR.getHeader().updateUI();
 
                 }
+                NR.getFormData2().updateUI();
+                NR.getHeader2().updateUI();
             }
+
         });
     }
 

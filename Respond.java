@@ -15,8 +15,8 @@ public class Respond {
 
 
 
-    private String headerRespond;
-    private String RaW;
+    //    private String headerRespond;
+//    private String RaW;
     private JPanel header;
     private JLabel ok;
     private JLabel quality;
@@ -56,18 +56,23 @@ public class Respond {
      * Vision Preview show us a picture if its a ,png type
      * @return JPanel respond that we can add it to the JFrame
      */
-    public JPanel rspond(){
+    public JPanel rspond(String themColor){
 
         JPanel respond = new JPanel(new BorderLayout());
-        respond.setBackground(new Color(90, 90, 120));
+        if (themColor == "blue")
+            respond.setBackground(new Color(90, 90, 120));
+        else if (themColor == "light")
+            respond.setBackground(new Color(220, 220, 220));
+        else
+            respond.setBackground(new Color(70, 70, 70));
 
         JTabbedPane tab = new JTabbedPane();
-        JPanel header  = HeaderRespond();
+        header  = HeaderRespond();
 
         JTabbedPane preview = new JTabbedPane();
 
-        JPanel RAW = new JPanel();
-        raw = new JTextArea(RaW, 38 , 30);
+        JPanel RAW = new JPanel(new BorderLayout());
+        raw = new JTextArea(38 , 30);
         raw.setLineWrap(true);
         raw.setEnabled(false);
         RAW.add(new JScrollPane(raw));
@@ -91,7 +96,7 @@ public class Respond {
         tab.add("Header", header);
         tab.add("Preview" , preview);
 
-        JPanel north = North();
+        JPanel north = North(themColor);
 
         respond.add(north, BorderLayout.NORTH);
         respond.add(tab, BorderLayout.CENTER);
@@ -108,33 +113,36 @@ public class Respond {
      */
     private JPanel HeaderRespond(){
 
-        header  = new JPanel();
-        header.setLayout(new GridBagLayout());
-        GridBagConstraints gbl = new GridBagConstraints();
-        gbl.fill = GridBagConstraints.HORIZONTAL;
+        header  = new JPanel(new BorderLayout());
+//        header.setLayout(new BorderLayout());
+//        GridBagConstraints gbl = new GridBagConstraints();
+//        gbl.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel name = new JLabel("Name");
         name.setBackground(Color.gray);
         name.setOpaque(true);
         name.setFont(new Font("Arial", Font.ITALIC, 15));
         int height = name.getPreferredSize().height +20;
-        name.setPreferredSize(new Dimension(name.getPreferredSize().width+5, height));
+        name.setPreferredSize(new Dimension(name.getPreferredSize().width, height));
 
         JLabel value = new JLabel("Value");
         value.setBackground(Color.gray);
         value.setOpaque(true);
         value.setFont(new Font("Arial", Font.ITALIC, 15));
-        value.setPreferredSize(new Dimension(value.getPreferredSize().width +5, height));
+        value.setPreferredSize(new Dimension(value.getPreferredSize().width +200, height));
 
 
-        JPanel test = new JPanel();
-        info = new JTextArea(headerRespond, 36 , 32);
+        JPanel test = new JPanel(new BorderLayout());
+        info = new JTextArea();
+
         info.setLineWrap(true);
         info.setEnabled(false);
         test.add(new JScrollPane(info));
 
 
         JButton copy = new JButton("Copy to Clipboard");
+        copy.setPreferredSize(new Dimension(copy.getPreferredSize().width +100, copy.getPreferredSize().height +17));
+
         copy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -144,31 +152,42 @@ public class Respond {
             }
         });
 
-        gbl.fill = GridBagConstraints.HORIZONTAL;
-        gbl.ipady = 20;
-        gbl.weightx = 0.5;
-        gbl.anchor = GridBagConstraints.FIRST_LINE_START;
-        header.add(name, gbl);
+        JPanel north = new JPanel(new BorderLayout());
+        north.add(name, BorderLayout.CENTER);
+        north.add(value, BorderLayout.EAST);
 
-        gbl.anchor = GridBagConstraints.FIRST_LINE_END;
-        gbl.fill = GridBagConstraints.HORIZONTAL;
-        gbl.weightx = 0.5;
-        header.add(value, gbl);
+//        JPanel south = new JPanel(new BorderLayout());
+//        south.add(copy, BorderLayout.EAST);
 
-        gbl.fill = GridBagConstraints.HORIZONTAL;
-        gbl.ipady = 550;
-        gbl.gridwidth = 3;
-        gbl.gridx = 0;
-        gbl.gridy = 1;
-        header.add(test, gbl);
+//        gbl.fill = GridBagConstraints.HORIZONTAL;
+//        gbl.ipady = 20;
+//        gbl.weightx = 0.5;
+//        gbl.anchor = GridBagConstraints.FIRST_LINE_START;
+//        header.add(name, BorderLayout.BEFORE_LINE_BEGINS);
+//        header.add(name, gbl);
 
-        gbl.fill = GridBagConstraints.HORIZONTAL;
-        gbl.weighty = 1.0;
-        gbl.ipady =10;
-        gbl.gridx =1;
-        gbl.gridy =2;
-        gbl.anchor = GridBagConstraints.LAST_LINE_END;
-        header.add(copy, gbl);
+//        gbl.anchor = GridBagConstraints.FIRST_LINE_END;
+//        gbl.fill = GridBagConstraints.HORIZONTAL;
+//        gbl.weightx = 0.5;
+//        header.add(value, gbl);
+
+//        gbl.fill = GridBagConstraints.HORIZONTAL;
+//        gbl.ipady = 550;
+//        gbl.gridwidth = 3;
+//        gbl.gridx = 0;
+//        gbl.gridy = 1;
+//        header.add(test, gbl);
+        header.add(north, BorderLayout.NORTH);
+        header.add(test, BorderLayout.CENTER);
+        header.add(copy, BorderLayout.SOUTH);
+
+//        gbl.fill = GridBagConstraints.HORIZONTAL;
+//        gbl.weighty = 1.0;
+//        gbl.ipady =10;
+//        gbl.gridx =1;
+//        gbl.gridy =2;
+//        gbl.anchor = GridBagConstraints.LAST_LINE_END;
+//        header.add(copy, BorderLayout.AFTER_LAST_LINE);
 
         return header;
     }
@@ -177,32 +196,45 @@ public class Respond {
      * JPanel than includes 3 JLabel(ok, time, quality)
      * @return JPanel north to add it in north of the respond JPanel
      */
-    private JPanel North(){
+    private JPanel North(String themColor){
 
         JPanel north = new JPanel(new BorderLayout());
         int height = north.getPreferredSize().height +40;
         north.setPreferredSize(new Dimension(north.getPreferredSize().width, height));
 
         ok = new JLabel("Code: " +0);
-        ok.setBackground(Color.pink);
         ok.setOpaque(true);
         ok.setFont(new Font("Serif", Font.BOLD, 15));
-        int width1 = ok.getPreferredSize().width +105;
+        int width1 = ok.getPreferredSize().width +85;
         ok.setPreferredSize(new Dimension(width1, ok.getPreferredSize().height));
         ok.setHorizontalAlignment(SwingConstants.CENTER);
 
         time = new JLabel("Time");
-        time.setBackground(new Color(140, 100, 200));
         time.setOpaque(true);
         time.setFont(new Font("Serif", Font.BOLD, 15));
         time.setHorizontalAlignment(SwingConstants.CENTER);
 
         quality = new JLabel("Respond");
-        quality.setBackground(Color.CYAN);
         quality.setOpaque(true);
         quality.setFont(new Font("Serif", Font.BOLD, 15));
         quality.setPreferredSize(new Dimension(width1, quality.getPreferredSize().height));
         quality.setHorizontalAlignment(SwingConstants.CENTER);
+
+        if (themColor == "blue") {
+            ok.setBackground(Color.pink);
+            time.setBackground(new Color(140, 100, 200));
+            quality.setBackground(Color.CYAN);
+        }
+        else if (themColor == "light"){
+            ok.setBackground(Color.gray);
+            time.setBackground(Color.lightGray);
+            quality.setBackground(new Color(140, 140, 140));
+        }
+        else {
+            ok.setBackground(new Color(100, 100, 100));
+            time.setBackground(new Color(140, 140, 140));
+            quality.setBackground(new Color(70, 70, 70));
+        }
 
         north.add(ok, BorderLayout.WEST);
         north.add(time, BorderLayout.CENTER);

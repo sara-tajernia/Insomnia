@@ -1,6 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * This class is for design the screen (JPanel)
@@ -13,7 +17,10 @@ public class Screen  {
     private JPanel newRequest ;
     private JPanel respond;
     private boolean full = false;
-    private boolean show ;
+    private boolean show = false;
+    private String themColor = "blue";
+    private boolean tray = false;
+    private boolean FollowRedirect = false;
 
     /**
      * manage the option of JFrame
@@ -30,34 +37,62 @@ public class Screen  {
         screen.revalidate();
         screen.repaint();
 
-        addMenu();
         return screen;
     }
+
+    public void setFollowRedirect(boolean followRedirect) {
+        FollowRedirect = followRedirect;
+    }
+
     /**
      * we use this method to get all 3 JPanel from other
      * classes and put all of them in a screen JFrame
      */
     public void first(){
+//        screen.setVisible(false);
         Screen S = new Screen();
         Requests R = new Requests();
 
         screen = S.screen();
-        requests = R.request();
-        newRequest = R.newRequest();
-        respond = R.getNR().ResPond();
+        requests = R.request(themColor);
+        newRequest = R.newRequest(themColor, FollowRedirect);
+        respond = R.getNR().ResPond(themColor);
 
         screen.add(requests, BorderLayout.WEST);
         screen.add(newRequest, BorderLayout.CENTER);
         screen.add(respond, BorderLayout.EAST);
 
+
+//        showScreen();
+        addMenu();
         screen.setVisible(true);
+
     }
 
     public void showScreen(){
 
-        if (show){
-            screen.remove(requests);
-        }
+//        screen.add(requests, BorderLayout.WEST);
+//        screen.add(newRequest, BorderLayout.CENTER);
+//        screen.add(respond, BorderLayout.EAST);
+
+        Screen S1 = new Screen();
+        screen = S1.screen;
+
+        screen.setVisible(true);
+
+//        screen.add(requests);
+//        screen.setVisible(true);
+//        screen.add(newRequest, BorderLayout.CENTER);
+//        screen.add(respond, BorderLayout.EAST);
+
+
+//        JFrame x1 = new JFrame();
+//        x1.setSize(500, 800);
+//        if (show) {
+//            x1.add(requests);
+//            x1.setVisible(true);
+//        }
+
     }
 
     /**
@@ -80,36 +115,66 @@ public class Screen  {
         option.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 JFrame opt = new JFrame("Option");
+                opt.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                 opt.setSize(300, 150);
                 opt.setLocationRelativeTo(screen);
                 JPanel Opt = new JPanel();
                 Opt.setLayout(new GridBagLayout());
                 GridBagConstraints gbl = new GridBagConstraints();
+
+
                 JCheckBox followRedirect = new JCheckBox("Follow Redirect");
                 followRedirect.addItemListener(new ItemListener() {
                     public void itemStateChanged(ItemEvent e) {
-                        if (e.getStateChange()==1){}
-                        if (e.getStateChange()==2){}
+//                        System.out.println(systemTray.isSelected());
+                        FollowRedirect = followRedirect.isSelected();
+                        first();
+//
+//                        setFollowRedirect(followRedirect.isSelected());
+//                        jmb.updateUI();
+//                        screen.setVisible(false);
+//                        if (e.getStateChange()==1){}
+//                        if (e.getStateChange()==2){}
                     }
                 });
+
+
                 JCheckBox systemTray = new JCheckBox("System Tray");
                 systemTray.addItemListener(new ItemListener() {
                     public void itemStateChanged(ItemEvent e) {
-                        if (e.getStateChange()==1){}
-                        if (e.getStateChange()==2){}
+                        tray = systemTray.isSelected();
                     }
                 });
+
                 String them[] = {"Dark them", "Light them", "Blue them"};
                 JComboBox box = new JComboBox(them);
                 box.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        if (box.getItemAt(box.getSelectedIndex()).equals("Light them")) {
-                            them.equals("Light");
-                            System.out.println("light");
+                        if (box.getItemAt(box.getSelectedIndex()).equals("Blue them")) {
+                            themColor = "blue";
+//                            System.out.println(themColor);
+                            screen.setVisible(false);
+                            first();
+                        }
+                        else if (box.getItemAt(box.getSelectedIndex()).equals("Light them")){
+                            themColor = "light";
+//                            System.out.println(themColor);
+                            screen.setVisible(false);
+                            first();
+                        }
+                        else {
+                            themColor = "dark";
+//                            System.out.println(themColor);
+                            screen.setVisible(false);
+                            first();
                         }
                     }
                 });
+
+
+
 
                 gbl.gridx= 0;
                 gbl.gridy= 0;
@@ -121,6 +186,27 @@ public class Screen  {
 
                 opt.add(Opt);
                 opt.setVisible(true);
+
+
+                if (opt.getDefaultCloseOperation() == JFrame.EXIT_ON_CLOSE) {
+                    File saveOption = new File("Option.txt");
+                    if (saveOption.exists()) {
+                        saveOption.delete();
+                    }
+
+                    try {
+                        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(saveOption));
+                        out.writeBoolean(FollowRedirect);
+                        out.writeBoolean(tray);
+                        out.writeBytes(themColor);
+                        out.close();
+
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+
             }
         });
         option.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
@@ -130,7 +216,48 @@ public class Screen  {
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+//                System.out.println(tray);
+                if (!tray)
+                    System.exit(0);
+                else {
+                    screen.setVisible(false);
+                    if(!SystemTray.isSupported()){
+                        System.out.println("System tray is not supported !!! ");
+                        return ;
+                    }
+
+                    SystemTray systemTray = SystemTray.getSystemTray();
+                    Image image = Toolkit.getDefaultToolkit().getImage("src/images/1.gif");
+                    PopupMenu trayPopupMenu = new PopupMenu();
+
+                    MenuItem active = new MenuItem("Active");
+                    active.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            screen.setVisible(true);
+                        }
+                    });
+                    trayPopupMenu.add(active);
+
+
+                    MenuItem Exit = new MenuItem("Exit");
+                    Exit.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            System.exit(0);
+                        }
+                    });
+                    trayPopupMenu.add(Exit);
+
+                    TrayIcon trayIcon = new TrayIcon(image, "SystemTray Demo", trayPopupMenu);
+                    trayIcon.setImageAutoSize(true);
+
+                    try{
+                        systemTray.add(trayIcon);
+                    }catch(AWTException awtException){
+                        awtException.printStackTrace();
+                    }
+                }
             }
         });
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, ActionEvent.CTRL_MASK));
@@ -165,6 +292,10 @@ public class Screen  {
                 show = !show;
                 System.out.println(show);
                 showScreen();
+//                first();
+//                if (show)
+//                    screen.remove(requests);
+//                showScreen();
             }                                                                                         ///////////     //////////////////////////////
         });
         sidebar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
