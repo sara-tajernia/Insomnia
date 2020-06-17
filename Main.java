@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-
 /**
  *  GUI
  *  This class is for use all the classes
@@ -12,8 +8,6 @@ import java.awt.event.*;
  */
 public class Main {
     public static void main(String[] args) {
-//        UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab.contentMargins",
-//                new Insets(0, 0, 0, 0));
         Screen screen =new Screen();
         screen.first();
     }

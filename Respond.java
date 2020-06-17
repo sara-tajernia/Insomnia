@@ -13,10 +13,6 @@ import java.awt.event.ActionListener;
 
 public class Respond {
 
-
-
-    //    private String headerRespond;
-//    private String RaW;
     private JPanel header;
     private JLabel ok;
     private JLabel quality;
@@ -114,10 +110,6 @@ public class Respond {
     private JPanel HeaderRespond(){
 
         header  = new JPanel(new BorderLayout());
-//        header.setLayout(new BorderLayout());
-//        GridBagConstraints gbl = new GridBagConstraints();
-//        gbl.fill = GridBagConstraints.HORIZONTAL;
-
         JLabel name = new JLabel("Name");
         name.setBackground(Color.gray);
         name.setOpaque(true);
@@ -155,39 +147,9 @@ public class Respond {
         JPanel north = new JPanel(new BorderLayout());
         north.add(name, BorderLayout.CENTER);
         north.add(value, BorderLayout.EAST);
-
-//        JPanel south = new JPanel(new BorderLayout());
-//        south.add(copy, BorderLayout.EAST);
-
-//        gbl.fill = GridBagConstraints.HORIZONTAL;
-//        gbl.ipady = 20;
-//        gbl.weightx = 0.5;
-//        gbl.anchor = GridBagConstraints.FIRST_LINE_START;
-//        header.add(name, BorderLayout.BEFORE_LINE_BEGINS);
-//        header.add(name, gbl);
-
-//        gbl.anchor = GridBagConstraints.FIRST_LINE_END;
-//        gbl.fill = GridBagConstraints.HORIZONTAL;
-//        gbl.weightx = 0.5;
-//        header.add(value, gbl);
-
-//        gbl.fill = GridBagConstraints.HORIZONTAL;
-//        gbl.ipady = 550;
-//        gbl.gridwidth = 3;
-//        gbl.gridx = 0;
-//        gbl.gridy = 1;
-//        header.add(test, gbl);
         header.add(north, BorderLayout.NORTH);
         header.add(test, BorderLayout.CENTER);
         header.add(copy, BorderLayout.SOUTH);
-
-//        gbl.fill = GridBagConstraints.HORIZONTAL;
-//        gbl.weighty = 1.0;
-//        gbl.ipady =10;
-//        gbl.gridx =1;
-//        gbl.gridy =2;
-//        gbl.anchor = GridBagConstraints.LAST_LINE_END;
-//        header.add(copy, BorderLayout.AFTER_LAST_LINE);
 
         return header;
     }
@@ -241,7 +203,6 @@ public class Respond {
         north.add(quality, BorderLayout.EAST);
 
         return north;
-
     }
 
 }

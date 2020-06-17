@@ -49,7 +49,6 @@ public class Screen  {
      * classes and put all of them in a screen JFrame
      */
     public void first(){
-//        screen.setVisible(false);
         Screen S = new Screen();
         Requests R = new Requests();
 
@@ -58,40 +57,14 @@ public class Screen  {
         newRequest = R.newRequest(themColor, FollowRedirect);
         respond = R.getNR().ResPond(themColor);
 
-        screen.add(requests, BorderLayout.WEST);
+        if (!show)
+            screen.add(requests, BorderLayout.WEST);
+
         screen.add(newRequest, BorderLayout.CENTER);
         screen.add(respond, BorderLayout.EAST);
 
-
-//        showScreen();
         addMenu();
         screen.setVisible(true);
-
-    }
-
-    public void showScreen(){
-
-//        screen.add(requests, BorderLayout.WEST);
-//        screen.add(newRequest, BorderLayout.CENTER);
-//        screen.add(respond, BorderLayout.EAST);
-
-        Screen S1 = new Screen();
-        screen = S1.screen;
-
-        screen.setVisible(true);
-
-//        screen.add(requests);
-//        screen.setVisible(true);
-//        screen.add(newRequest, BorderLayout.CENTER);
-//        screen.add(respond, BorderLayout.EAST);
-
-
-//        JFrame x1 = new JFrame();
-//        x1.setSize(500, 800);
-//        if (show) {
-//            x1.add(requests);
-//            x1.setVisible(true);
-//        }
 
     }
 
@@ -128,15 +101,8 @@ public class Screen  {
                 JCheckBox followRedirect = new JCheckBox("Follow Redirect");
                 followRedirect.addItemListener(new ItemListener() {
                     public void itemStateChanged(ItemEvent e) {
-//                        System.out.println(systemTray.isSelected());
                         FollowRedirect = followRedirect.isSelected();
                         first();
-//
-//                        setFollowRedirect(followRedirect.isSelected());
-//                        jmb.updateUI();
-//                        screen.setVisible(false);
-//                        if (e.getStateChange()==1){}
-//                        if (e.getStateChange()==2){}
                     }
                 });
 
@@ -154,19 +120,16 @@ public class Screen  {
                     public void actionPerformed(ActionEvent e) {
                         if (box.getItemAt(box.getSelectedIndex()).equals("Blue them")) {
                             themColor = "blue";
-//                            System.out.println(themColor);
                             screen.setVisible(false);
                             first();
                         }
                         else if (box.getItemAt(box.getSelectedIndex()).equals("Light them")){
                             themColor = "light";
-//                            System.out.println(themColor);
                             screen.setVisible(false);
                             first();
                         }
                         else {
                             themColor = "dark";
-//                            System.out.println(themColor);
                             screen.setVisible(false);
                             first();
                         }
@@ -216,7 +179,6 @@ public class Screen  {
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                System.out.println(tray);
                 if (!tray)
                     System.exit(0);
                 else {
@@ -290,12 +252,7 @@ public class Screen  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 show = !show;
-                System.out.println(show);
-                showScreen();
-//                first();
-//                if (show)
-//                    screen.remove(requests);
-//                showScreen();
+                first();
             }                                                                                         ///////////     //////////////////////////////
         });
         sidebar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));

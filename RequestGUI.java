@@ -35,11 +35,6 @@ public class RequestGUI implements Serializable  {
         this.method = method;
         this.body = body;
         this.header = header;
-//        System.out.println("lolll" +method +url);
-//        for (String s : body) {
-//                System.out.println(s);
-//        }
-//        System.out.println(method);
     }
 
     public void setUrl(URL url) { this.url = url; }
@@ -106,16 +101,6 @@ public class RequestGUI implements Serializable  {
 
     public void createRequest(boolean saveRespond, String nameOutput, boolean headerRespond, boolean followRedirect) throws IOException {
 
-
-
-//        System.out.println("\n\n\n\n\n" +followRedirect);
-//        for (String s : header){
-//            System.out.println("header: "s);
-//        }
-//        for (String s : body){
-//            System.out.println(s);
-//        }
-
         urlCon = (HttpURLConnection) url.openConnection();
         urlCon.setRequestMethod(method);
         urlCon.setInstanceFollowRedirects(true);
@@ -127,11 +112,9 @@ public class RequestGUI implements Serializable  {
 
         if (header != null) {
             for (String s : header) {
-//                System.out.println("header2: " +s);
                 if (s!=null) {
                     if (s.contains(":")) {
                         String nameValue[] = s.split(":");
-//                        System.out.println("header" +nameValue[0]);
                         urlCon.setRequestProperty(nameValue[0], nameValue[1]);
                     }
                 }
@@ -142,13 +125,9 @@ public class RequestGUI implements Serializable  {
         HashMap<String, String> Body = new HashMap<>();
         if (body != null) {
             for (String s : body) {
-//                System.out.println("formdata2:  " +s);
                 if (s!=null) {
                     if (s.contains("=")) {
-
-
                         String test[] = s.split("=");
-//                        System.out.println("dataform "+test[0]);
                         Body.put(test[0], test[1]);
                     }
                 }
@@ -192,19 +171,13 @@ public class RequestGUI implements Serializable  {
         }
 
 
-
-
-
         code = urlCon.getResponseCode();
         respondMessage = urlCon.getResponseMessage();
         System.out.println("***********************");
         System.out.println("Code: " +code +" " +urlCon.getResponseMessage());
         System.out.println("Method: " +urlCon.getRequestMethod());
         System.out.println("direct: " +urlCon.getInstanceFollowRedirects());
-//        System.out.println(HeaderRespond);
         System.out.println("***********************");
-//        for (String s :HeaderRespond)
-//            System.out.println(s);
 
         Map<String, List<String>> map = urlCon.getHeaderFields();
         HeaderRespond = new String[map.keySet().size()];

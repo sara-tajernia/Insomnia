@@ -14,10 +14,8 @@ public class NewRequest {
 
     private JPanel header;
     private JPanel formData;
-    //    private Color b = new Color(180, 170, 220);
     private JTextField UrL = new JTextField("URL");
     private JComboBox METHOD;
-
     private int counterHeader = 0;
     private int counterFormData = 0;
     private String saveHeader[];
@@ -27,18 +25,14 @@ public class NewRequest {
     private String nameRequest;
     private Respond RP;
     private JPanel rp;
-    //    private JScrollPane scrollFromData;
     private JPanel formData2;
     private JPanel header2;
     private boolean followRedirect = false;
-
-//    private int sizeformData = 0;
 
 
     public NewRequest(String nameRequest, boolean followRedirect){
         this.nameRequest = nameRequest;
         this.followRedirect = followRedirect;
-//        System.out.println("this   " +nameRequest);
     }
 
 
@@ -113,7 +107,6 @@ public class NewRequest {
     public void Calculate1(int type){
 
         saveHeader = new String[counterHeader];
-//        System.out.println(counterHeader);
         int CounterHeader = 0;
         for (Component c : header2.getComponents()){
             if (c instanceof JPanel){
@@ -124,11 +117,9 @@ public class NewRequest {
                     if (cmp instanceof JTextField){
                         if (name.equals("")){
                             name = ((JTextField) cmp).getText();
-//                            System.out.println(name);
                         }
                         else {
                             Value = ((JTextField) cmp).getText();
-//                            System.out.println(Value );
                         }
                     }
                     if (cmp instanceof JCheckBox){
@@ -143,7 +134,6 @@ public class NewRequest {
 
         saveFormData = new String[counterFormData];
         boxFormData = new boolean[counterFormData];
-//        System.out.println(counterFormData);
         int CounterFormData = 0;
         for (Component c : formData2.getComponents()){
             if (c instanceof JPanel){
@@ -163,20 +153,12 @@ public class NewRequest {
                         boxFormData[CounterFormData] = ((JCheckBox) cmp).isSelected();
                         if ((boxFormData[CounterFormData] && type==2) || type ==1)
                             saveFormData[CounterFormData] = name + "=" + Value;
-//                        System.out.println(CounterFormData);
-//                        System.out.println(boxFormData[CounterFormData]);
-//                        System.out.println(saveFormData[CounterFormData]);
-
                     }
                 }
                 CounterFormData++;
 
             }
-//            for (boolean s :boxFormData)
-//                System.out.println(s);
         }
-
-
     }
 
     /**
@@ -190,7 +172,6 @@ public class NewRequest {
      * @return JPanel north to add it in north of the newRequest JPanel
      */
     public JPanel North(){
-//        System.out.println("north" +followRedirect);
 
         JPanel north = new JPanel(new BorderLayout());
         JPanel north1 = new JPanel(new BorderLayout());
@@ -216,10 +197,6 @@ public class NewRequest {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Calculate1(1);
-//                for (String s:saveFormData)
-//                        System.out.println(s);
-//                    for (String s:saveHeader)
-//                        System.out.println(s);
 
                 try {
                     URL url = new URL(UrL.getText());
@@ -239,11 +216,9 @@ public class NewRequest {
         send.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                System.out.println("hi1");
                 Calculate1(2);
                 try {
                     long t1 = System.currentTimeMillis();
-//                    System.out.println(System.currentTimeMillis());
                     URL url = new URL(UrL.getText());
                     RequestGUI requestGUI = new RequestGUI(url, METHOD.getSelectedItem().toString(), saveFormData, saveHeader);
 
@@ -262,7 +237,6 @@ public class NewRequest {
                     test2.setText(requestGUI.getRespondMessage());
 
                     String check[] = requestGUI.getUrlCon().getContentType().split("/|\\;");
-//                    System.out.println("output " +check[1]);
                     if (check[1].equals("png")){
                         File file = new File(nameRequest +".png");
                         FileOutputStream fos = new FileOutputStream(file);
@@ -280,7 +254,6 @@ public class NewRequest {
                     JTextArea test3 = RP.getInfo();
                     test3.setText("");
                     for (String i : requestGUI.getHeaderRespond()){
-//                        System.out.println(i);
                         String split[] = i.split("___");
                         test3.setText(test3.getText() +split[0] +"  ---->  " +split[1] +"\n");
                     }
@@ -288,14 +261,11 @@ public class NewRequest {
                     JTextArea test4 = RP.getRaw();
                     test4.setText(requestGUI.getOutput());
 
-
-
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "You cant have this URL", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
-//        System.out.println("hii");
 
         north.add(north1, BorderLayout.CENTER);
         north.add(north2, BorderLayout.EAST);
@@ -342,8 +312,6 @@ public class NewRequest {
         });
 
         header.add(new JScrollPane(header2));
-//        header.updateUI();
-//        header2.updateUI();
         return header;
     }
     /**
@@ -384,7 +352,6 @@ public class NewRequest {
                 formData2.setLayout(new GridLayout(counterFormData+1, 1));
             else
                 formData2.setLayout(new GridLayout(15, 1));
-//            System.out.println(counterFormData);
             formData2.add(x);
             counterFormData++;
         }
@@ -428,8 +395,6 @@ public class NewRequest {
         plus.setHorizontalAlignment(SwingConstants.CENTER);
         plus.setFocusable(true);
 
-
-
         addNew("Name", "Value", "Form Data");
         plus.addActionListener(new ActionListener() {
             @Override
@@ -440,9 +405,6 @@ public class NewRequest {
         });
         formData.add(plus, BorderLayout.NORTH);
         formData.add(new JScrollPane(formData2));
-
-
-
         return formData;
     }
 }
